@@ -1,0 +1,52 @@
+-- 1. Create the database if it doesn't exist
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'CompanyDB')
+BEGIN
+    CREATE DATABASE CompanyDB;
+END
+GO
+
+-- 2. Switch to the database
+USE CompanyDB;
+GO
+
+-- 3. Create the employee_list table
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'employee_list')
+BEGIN
+    CREATE TABLE employee_list (
+        ID INT IDENTITY(1,1) PRIMARY KEY,
+        FirstName NVARCHAR(50) NOT NULL,
+        MiddleName NVARCHAR(50) NULL,
+        LastName NVARCHAR(50) NOT NULL,
+        Age INT NOT NULL,
+        Gender NVARCHAR(10) NOT NULL
+    );
+END
+GO
+
+-- 4. Create the employee_role table
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'employee_role')
+BEGIN
+    CREATE TABLE employee_role (
+        ID INT PRIMARY KEY,
+        JobDescription NVARCHAR(100) NOT NULL,
+        Salary DECIMAL(10,2) NOT NULL
+    );
+END
+GO
+
+-- 5. Example LEFT JOIN query to combine employee info with role
+SELECT 
+    e.ID,
+    e.FirstName,
+    e.MiddleName,
+    e.LastName,
+    e.Age,
+    e.Gender,
+    r.JobDescription,
+    r.Salary
+FROM 
+    employee_list e
+LEFT JOIN 
+    employee_role r
+ON 
+    e.ID = r.ID;
